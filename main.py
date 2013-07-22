@@ -24,11 +24,23 @@ import git
 import pywikibot
 import os
 import shutil
+import sys
 
 #config
 path = '~/projects/afc_pusher/tmp'
 path = os.path.expanduser(path)
 testwp = pywikibot.Site('test', 'wikipedia')
+
+if '--beta' in sys.argv:
+    branch = 'beta'
+elif '--master' in sys.argv:
+    branch = 'master'
+else:
+    branch = 'develop'
+
+if '--enwp' in sys.argv:
+    testwp = pywikibot.Site('en', 'wikipedia')  # Sucky variable names!
+
 
 if os.path.exists(path):
     #Update it
@@ -44,16 +56,25 @@ else:
     print 'Cloning to tmp/'
     repo = git.Repo.clone_from('https://github.com/WPAFC/afch.git', path)
 
-sha1 = repo.heads.develop.commit.hexsha
-print 'Checked out ' + sha1
-summary = 'Auto-updating to ' + sha1
+sha1 = repo.heads[branch].commit.hexsha
+repo.heads[branch].checkout()
+
+
+summary = 'Auto-updating to {0} ({1})'.format(sha1, branch)
+print summary
+
+if branch == 'beta':
+    prefix = 'MediaWiki:Gadget-afchelper-beta.js'
+else:
+    prefix = 'MediaWiki:Gadget-afchelper.js'
+
 
 mapping = {
-    'afch.js': 'MediaWiki:Gadget-afchelper.js',
-    'core.js': 'MediaWiki:Gadget-afchelper.js/core.js',
-    'ffu.js': 'MediaWiki:Gadget-afchelper.js/ffu.js',
-    'redirects.js': 'MediaWiki:Gadget-afchelper.js/redirects.js',
-    'submissions.js': 'MediaWiki:Gadget-afchelper.js/submissions.js',
+    'afch.js': prefix + '',
+    'core.js': prefix + '/core.js',
+    'ffu.js': prefix + '/ffu.js',
+    'redirects.js': prefix + '/redirects.js',
+    'submissions.js': prefix + '/submissions.js',
 }
 files = os.listdir(path + '/src')
 print files
@@ -61,6 +82,8 @@ print files
 for script in files:
     with open(path + '/src/' + script, 'r') as f:
         text = f.read()
+    if branch == 'beta':
+        text = text.replace('MediaWiki:Gadget-afchelper.js', 'MediaWiki:Gadget-afchelper-beta.js')  # I hope this is ok.
     pg = pywikibot.Page(testwp, mapping[script])
     pg.put(text, summary)
 
