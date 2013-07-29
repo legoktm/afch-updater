@@ -35,6 +35,8 @@ if '--beta' in sys.argv:
     branch = 'beta'
 elif '--master' in sys.argv:
     branch = 'master'
+elif '--ffu' in sys.argv:
+    branch = 'ffu'
 else:
     branch = 'develop'
 
@@ -63,11 +65,12 @@ repo.heads[branch].checkout()
 summary = 'Auto-updating to {0} ({1})'.format(sha1, branch)
 print summary
 
-if branch == 'beta':
-    prefix = 'MediaWiki:Gadget-afchelper-beta.js'
-else:
-    prefix = 'MediaWiki:Gadget-afchelper.js'
+prefixes = {'beta': 'MediaWiki:Gadget-afchelper-beta.js',
+            'ffu': 'User:Theopolisme/afch-ffu.js',
+            'default': 'MediaWiki:Gadget-afchelper.js',
+            }
 
+prefix = prefixes.get(branch, prefixes['default'])
 
 mapping = {
     'afch.js': prefix + '',
@@ -82,8 +85,8 @@ print files
 for script in files:
     with open(path + '/src/' + script, 'r') as f:
         text = f.read()
-    if branch == 'beta':
-        text = text.replace('MediaWiki:Gadget-afchelper.js', 'MediaWiki:Gadget-afchelper-beta.js')  # I hope this is ok.
+    if prefix != 'MediaWiki:Gadget-afchelper.js':
+        text = text.replace('MediaWiki:Gadget-afchelper.js', prefix)  # I hope this is ok.
     pg = pywikibot.Page(testwp, mapping[script])
     pg.put(text, summary)
 
