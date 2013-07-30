@@ -65,6 +65,8 @@ repo.heads[branch].checkout()
 summary = 'Auto-updating to {0} ({1})'.format(sha1, branch)
 print summary
 
+header = '/* Uploaded from https://github.com/WPAFC/afch, commit: {0} ({1}) */\n'.format(sha1, branch)
+
 prefixes = {'beta': 'MediaWiki:Gadget-afchelper-beta.js',
             'ffu': 'User:Theopolisme/afch-ffu.js',
             'default': 'MediaWiki:Gadget-afchelper.js',
@@ -87,6 +89,7 @@ for script in files:
         text = f.read()
     if prefix != 'MediaWiki:Gadget-afchelper.js':
         text = text.replace('MediaWiki:Gadget-afchelper.js', prefix)  # I hope this is ok.
+    text = header + text  # Add our custom header
     pg = pywikibot.Page(testwp, mapping[script])
     pg.put(text, summary)
 
