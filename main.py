@@ -29,7 +29,6 @@ import sys
 #config
 path = '~/projects/afc_pusher/tmp'
 path = os.path.expanduser(path)
-testwp = pywikibot.Site('test', 'wikipedia')
 
 if '--beta' in sys.argv:
     branch = 'beta'
@@ -42,6 +41,8 @@ else:
 
 if '--enwp' in sys.argv:
     testwp = pywikibot.Site('en', 'wikipedia')  # Sucky variable names!
+else:
+    testwp = pywikibot.Site('test', 'wikipedia')
 
 
 if os.path.exists(path):
