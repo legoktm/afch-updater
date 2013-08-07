@@ -85,6 +85,10 @@ mapping = {
 files = os.listdir(path + '/src')
 print files
 
+
+def strip_first_line(text):
+    return '\n'.join(text.splitlines[1:])
+
 for script in files:
     with open(path + '/src/' + script, 'r') as f:
         text = f.read()
@@ -92,7 +96,9 @@ for script in files:
         text = text.replace('MediaWiki:Gadget-afchelper.js', prefix)  # I hope this is ok.
     text = header + text  # Add our custom header
     pg = pywikibot.Page(testwp, mapping[script])
-    pg.put(text, summary)
+    old = pg.get()
+    if strip_first_line(text) != strip_first_line(old):
+        pg.put(text, summary)
 
 #print 'Cleaning up..'
 #shutil.rmtree(path)
