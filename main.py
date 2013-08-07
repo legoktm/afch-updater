@@ -76,7 +76,7 @@ prefixes = {'beta': 'MediaWiki:Gadget-afchelper-beta.js',
 prefix = prefixes.get(branch, prefixes['default'])
 
 mapping = {
-    'afch.js': prefix + '',
+    'MediaWiki:Gadget-afchelper.js': prefix + '',
     'core.js': prefix + '/core.js',
     'ffu.js': prefix + '/ffu.js',
     'redirects.js': prefix + '/redirects.js',
