@@ -96,7 +96,10 @@ for script in files:
         text = text.replace('MediaWiki:Gadget-afchelper.js', prefix)  # I hope this is ok.
     text = header + text  # Add our custom header
     pg = pywikibot.Page(testwp, mapping[script])
-    old = pg.get()
+    if pg.exists():
+        old = pg.get()
+    else:
+        old = '\n\n\n\n'
     if strip_first_line(text) != strip_first_line(old):
         pg.put(text, summary)
     else:
