@@ -99,6 +99,8 @@ for script in files:
     old = pg.get()
     if strip_first_line(text) != strip_first_line(old):
         pg.put(text, summary)
+    else:
+        print '{0} required no updates'.format(pg.title())
 
 #print 'Cleaning up..'
 #shutil.rmtree(path)
