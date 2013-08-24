@@ -76,7 +76,8 @@ prefixes = {'beta': 'MediaWiki:Gadget-afchelper-beta.js',
 prefix = prefixes.get(branch, prefixes['default'])
 
 mapping = {
-    'MediaWiki:Gadget-afchelper.js': prefix + '',
+    'MediaWiki:Gadget-afchelper.js': prefix,
+    'MediaWiki:Gadget-afchelper.css': prefix[:-2] + 'css',
     'core.js': prefix + '/core.js',
     'ffu.js': prefix + '/ffu.js',
     'redirects.js': prefix + '/redirects.js',
@@ -94,6 +95,7 @@ for script in files:
         text = f.read()
     if prefix != 'MediaWiki:Gadget-afchelper.js':
         text = text.replace('MediaWiki:Gadget-afchelper.js', prefix)  # I hope this is ok.
+        text = text.replace('MediaWiki:Gadget-afchelper.css', prefix[:-2] + 'css')
     text = header + text  # Add our custom header
     pg = pywikibot.Page(testwp, mapping[script])
     if pg.exists():
