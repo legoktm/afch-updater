@@ -87,7 +87,7 @@ print files
 
 
 def strip_first_line(text):
-    return '\n'.join(text.splitlines[1:])
+    return '\n'.join(text.splitlines()[1:])
 
 for script in files:
     with open(path + '/src/' + script, 'r') as f:
